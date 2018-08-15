@@ -1,0 +1,24 @@
+{
+  "name": "sim-ecom",
+  "version": "1.0.0",
+  "description": "A simple ecommerce project api",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "prod": "cross-env NODE_ENV=production node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cross-env": "^5.2.0",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "express-async-errors": "^3.0.0",
+    "jsonwebtoken": "^8.3.0",
+    "mongoose": "^5.2.5",
+    "mongoose-mongodb-errors": "0.0.2",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.18.3"
+  }
+}
