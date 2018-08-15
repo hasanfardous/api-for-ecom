@@ -1,7 +1,78 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const Product = mongoose.model('Product');  
 const Product_Category = mongoose.model('Product_Category');  
+
+//get all products
+router.get('/', async(req, res) => {
+    const products = await Product.find({}, (err, all_products) => {
+        if (err) throw err;
+
+        res.status(200).send({error: false, all_products});
+    });
+});
+
+//Add new product
+router.post('/add_new', async(req, res) => {
+	var product_name = req.body.name;
+	var product_description = req.body.description;
+
+	if (product_name !== '' && product_description !== '') {
+
+            const product_add = new Product();
+            product_add.name = product_name;
+            product_add.description = product_description;
+            await product_add.save((err) =>{
+                if (err) throw err;
+                res.status(200).send({error: false, message: 'Product has been added successfully!'});
+            });
+               
+	} else {
+		res.status(200).send({error: true, message: 'Fields can\'t be blank!'});
+	}
+	
+});
+
+//Update product
+router.post('/update', async(req, res) => {
+	var product_id = req.body._id;
+	var product_name = req.body.name;
+	var product_description = req.body.description;
+
+	if (product_name !== '' && product_description !== '') {
+            
+            const product_update = await Product.findByIdAndUpdate({
+                _id: product_id
+            }, req.body, {
+                new: true,
+                runValidators: true
+            });
+            res.status(200).send({error: false, message: 'Product has been updated successfully!'});
+               
+	} else {
+		res.status(200).send({error: true, message: 'Fields can\'t be blank!'});
+	}
+	
+});
+
+
+//Delete product
+router.post('/delete', async(req, res) => {
+	var product_id = req.body._id;
+
+	if (product_id) {
+        const product_delete = await Product.findByIdAndRemove({
+            _id: product_id
+        });
+        res.status(200).send({error: false, message: 'Product has been deleted successfully!'});
+               
+	} else {
+		res.status(200).send({error: true, message: 'Must select an id!'});
+	}
+	
+});
+
 
 //get all product categories
 router.get('/category', async(req, res) => {
@@ -86,6 +157,7 @@ router.post('/category/delete', async(req, res) => {
 	}
 	
 });
+
 
 function verifyToken(req, res, next){
 	const bearerHeader = req.headers['authorization'];

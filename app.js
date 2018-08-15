@@ -10,7 +10,9 @@ require('./mongo');
 
 //Models
 require('./model/Users');
+require('./model/Product');
 require('./model/Product_Category');
+require('./model/Product_Supplier');
 
 //Middleware
 app.use(bodyParser.json())
@@ -25,6 +27,7 @@ app.use((req, res, next) => {
 //Routes
 app.use('/users', require('./routes/users'));
 app.use('/products', require('./routes/products'));
+app.use('/suppliers', require('./routes/suppliers'));
 
 //While routes goes to wrong
 // app.use((req, res, next) => {
