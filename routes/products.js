@@ -1,8 +1,35 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const multer = require('multer');
 const Product = mongoose.model('Product');  
+const ProductImg = mongoose.model('ProductImg');  
 const Product_Category = mongoose.model('Product_Category');  
+
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function(req, file, cb) {
+        cb(null, Date.now() + file.originalname);
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+};
+
+const upload = multer({
+    storage: storage, 
+    limits: {
+        fileSize: 1024 * 1024 * 5
+    },
+    fileFilter: fileFilter
+});
 
 //get all products
 router.get('/', async(req, res) => {
@@ -14,14 +41,16 @@ router.get('/', async(req, res) => {
 });
 
 //Add new product
-router.post('/add_new', async(req, res) => {
+router.post('/add_new', upload.single('singleImage'), async(req, res) => {
 	var product_name = req.body.name;
+	var product_image = req.file.path;
 	var product_description = req.body.description;
 
-	if (product_name !== '' && product_description !== '') {
+	if (product_name && product_description) {
 
             const product_add = new Product();
             product_add.name = product_name;
+            product_add.image = product_image;
             product_add.description = product_description;
             await product_add.save((err) =>{
                 if (err) throw err;
@@ -34,13 +63,32 @@ router.post('/add_new', async(req, res) => {
 	
 });
 
+//Add product image
+// router.post('/add_image', async(req, res) => {
+// 	var productImg = req.body.image;
+
+// 	if (productImg) {
+
+//             const img_add = new ProductImg();
+//             img_add.path = productImg;
+//             await img_add.save((err) =>{
+//                 if (err) throw err;
+//                 res.status(200).send({error: false, message: 'Product image has been added successfully!'});
+//             });
+               
+// 	} else {
+// 		res.status(200).send({error: true, message: 'Image path field can\'t be blank!'});
+// 	}
+	
+// });
+
 //Update product
 router.post('/update', async(req, res) => {
 	var product_id = req.body._id;
 	var product_name = req.body.name;
 	var product_description = req.body.description;
 
-	if (product_name !== '' && product_description !== '') {
+	if (product_name && product_description) {
             
             const product_update = await Product.findByIdAndUpdate({
                 _id: product_id
@@ -88,7 +136,7 @@ router.post('/category/add_new', async(req, res) => {
 	var cat_name = req.body.name;
 	var cat_description = req.body.description;
 
-	if (cat_name !== '' && cat_description !== '') {
+	if (cat_name && cat_description) {
 
             // jwt.verify(req.token, 'secretkey', (err, authData) =>{
             //     if (err) {
@@ -125,7 +173,7 @@ router.post('/category/update', async(req, res) => {
 	var cat_name = req.body.name;
 	var cat_description = req.body.description;
 
-	if (cat_name !== '' && cat_description !== '') {
+	if (cat_name && cat_description) {
             
             const cat_update = await Product_Category.findByIdAndUpdate({
                 _id: cat_id
