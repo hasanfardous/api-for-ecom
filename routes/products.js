@@ -64,23 +64,23 @@ router.post('/add_new', upload.single('singleImage'), async(req, res) => {
 });
 
 //Add product image
-// router.post('/add_image', async(req, res) => {
-// 	var productImg = req.body.image;
+router.post('/add_image', upload.single('singleImage'), async(req, res) => {
+	var productImg = req.file.path;
 
-// 	if (productImg) {
+	if (productImg) {
 
-//             const img_add = new ProductImg();
-//             img_add.path = productImg;
-//             await img_add.save((err) =>{
-//                 if (err) throw err;
-//                 res.status(200).send({error: false, message: 'Product image has been added successfully!'});
-//             });
+            const img_add = new ProductImg();
+            img_add.path = productImg;
+            await img_add.save((err, images) =>{
+                if (err) throw err;
+                res.status(200).send({error: false, imageUrl: images.path, message: 'Product image has been added successfully!'});
+            });
                
-// 	} else {
-// 		res.status(200).send({error: true, message: 'Image path field can\'t be blank!'});
-// 	}
+	} else {
+		res.status(200).send({error: true, message: 'Image path field can\'t be blank!'});
+	}
 	
-// });
+});
 
 //Update product
 router.post('/update', async(req, res) => {
