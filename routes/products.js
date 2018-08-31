@@ -82,6 +82,17 @@ router.post('/add_image', upload.single('singleImage'), async(req, res) => {
 	
 });
 
+//Product images
+router.get('/images', async(req, res) => {
+	    
+    const images = await ProductImg.find({}, (err, all_imgs) => {
+        if (err) throw err;
+
+        res.status(200).send({error: false, all_imgs});
+    });
+	
+});
+
 //Update product
 router.post('/update', async(req, res) => {
 	var product_id = req.body._id;

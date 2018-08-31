@@ -25,6 +25,8 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/uploads', express.static('uploads'));
+
 //Routes
 app.use('/users', require('./routes/users'));
 app.use('/products', require('./routes/products'));

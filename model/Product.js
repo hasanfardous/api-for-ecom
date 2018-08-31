@@ -6,6 +6,22 @@ const product_schema = new mongoose.Schema(
 		type: String,
 		required: "Product name is Required!"
 	},
+	category: {
+		type: String,
+		required: "Category is required!"
+	},
+	supplier: {
+		type: String,
+		required: "Supplier is required!"
+	},
+	price: {
+		type: String,
+		required: "Price is required!"
+	},
+	negotiable: {
+		type: String,
+		required: "Negotiable is required!"
+	},
 	image: {
 		type: String,
 		required: "Image is required!"
