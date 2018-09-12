@@ -41,15 +41,22 @@ router.get('/', async(req, res) => {
 });
 
 //Add new product
-router.post('/add_new', upload.single('singleImage'), async(req, res) => {
-	var product_name = req.body.name;
-	var product_image = req.file.path;
+router.post('/add_new', async(req, res) => {
+	var product_name = req.body.prname;
+	var product_cat = req.body.category;
+	var product_supp = req.body.supplier;
+	var product_price = req.body.price;
+	var product_neg = req.body.negotiable;
+	var product_image = req.body.image;
 	var product_description = req.body.description;
 
 	if (product_name && product_description) {
-
             const product_add = new Product();
             product_add.name = product_name;
+            product_add.category = product_cat;
+            product_add.supplier = product_supp;
+            product_add.price = product_price;
+            product_add.negotiable = product_neg;
             product_add.image = product_image;
             product_add.description = product_description;
             await product_add.save((err) =>{
